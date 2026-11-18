@@ -94,13 +94,6 @@ const COLUMNS: Column[] = [
                 external: true,
             },
             {
-                label: 'book',
-                desc: 'reading list',
-                href: BOOK_URL,
-                icon: RiBookShelfLine,
-                external: true,
-            },
-            {
                 label: 'status',
                 desc: 'service uptime',
                 href: STATUS_URL,
@@ -112,6 +105,13 @@ const COLUMNS: Column[] = [
                 desc: 'links & bio',
                 href: INFO_URL,
                 icon: RiLinksLine,
+                external: true,
+            },
+            {
+                label: 'book',
+                desc: 'reading list',
+                href: BOOK_URL,
+                icon: RiBookShelfLine,
                 external: true,
             },
         ],
