@@ -32,7 +32,7 @@ Every list is a plain markdown checklist in `content/<slug>/plan.md`:
 node scripts/fetch-posters.mjs   # macOS (uses sips)
 ```
 
-Looks up each entry on Wikipedia (vi.wikipedia for `phim-vietnam`) and takes the infobox poster, falling back to the article's "season 1" page and then [TVmaze](https://www.tvmaze.com/api) (Disney+/HBO series whose Wikipedia infobox is only a logo; the premiere year must match). It and saves a ≤420px JPEG to `public/posters/<slug>/` plus a manifest in `src/data/posters.json`. Only missing entries are fetched; `--refresh` redoes everything. Wide 16:9 title cards are skipped, and entries without any poster get a typographic one (title in the display serif). When the search lands on the wrong article, pin the right one in `OVERRIDES` at the top of the script. Run it after adding a new film, then commit the images.
+Looks up each entry on Wikipedia (vi.wikipedia for `phim-vietnam`) and takes the infobox poster, falling back to the article's "season 1" page, then [TVmaze](https://www.tvmaze.com/api) (Disney+/HBO series whose Wikipedia infobox is only a logo), then IMDb's search suggestions (recent Vietnamese films, announced sequels — pin English title + year in `IMDB`). TVmaze and IMDb results must match the release year. It and saves a ≤420px JPEG to `public/posters/<slug>/` plus a manifest in `src/data/posters.json`. Only missing entries are fetched; `--refresh` redoes everything. Wide 16:9 title cards are skipped, and entries without any poster get a typographic one (title in the display serif). When the search lands on the wrong article, pin the right one in `OVERRIDES` at the top of the script. Run it after adding a new film, then commit the images.
 
 ## Deploy
 

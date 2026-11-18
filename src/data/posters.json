@@ -526,5 +526,33 @@
   "zootopia/Zootopia 2 (2025)": {
     "src": "/posters/zootopia/zootopia-2-2025.jpg",
     "source": "en:Zootopia 2"
+  },
+  "avatar/Avatar 4 (2029)": {
+    "src": "/posters/avatar/avatar-4-2029.jpg",
+    "source": "imdb:tt3095356 Avatar 4"
+  },
+  "avatar/Avatar 5 (2031)": {
+    "src": "/posters/avatar/avatar-5-2031.jpg",
+    "source": "imdb:tt5637536 Avatar 5"
+  },
+  "frozen/Frozen 3 (2027)": {
+    "src": "/posters/frozen/frozen-3-2027.jpg",
+    "source": "imdb:tt26680923 Frozen III"
+  },
+  "marvel/Avengers: Secret Wars (2027)": {
+    "src": "/posters/marvel/avengers-secret-wars-2027.jpg",
+    "source": "imdb:tt21361444 Avengers: Secret Wars"
+  },
+  "phim-vietnam/Nụ hôn bạc tỷ": {
+    "src": "/posters/phim-vietnam/nu-hon-bac-ty.jpg",
+    "source": "imdb:tt35676748 Money Kisses"
+  },
+  "phim-vietnam/Phi phong": {
+    "src": "/posters/phim-vietnam/phi-phong.jpg",
+    "source": "imdb:tt40790250 Phi Phong: The Blood Demon"
+  },
+  "phim-vietnam/Làm giàu với ma": {
+    "src": "/posters/phim-vietnam/lam-giau-voi-ma.jpg",
+    "source": "imdb:tt31647306 Betting with Ghost"
   }
 }

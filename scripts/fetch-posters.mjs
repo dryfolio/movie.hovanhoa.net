@@ -2,8 +2,10 @@
 // public/posters/<slug>/<file>.jpg and records the matches in
 // src/data/posters.json. Sources, in order: the Wikipedia infobox image
 // (vi.wikipedia for Vietnamese films), the article's "season 1" page, then
-// TVmaze (Disney+/HBO series whose Wikipedia infobox is only a logo). Already-matched entries are skipped, so it's safe to
-// re-run after adding a film.
+// TVmaze (Disney+/HBO series whose Wikipedia infobox is only a logo), then
+// IMDb's search-suggestion feed (recent Vietnamese films and announced
+// sequels Wikipedia has no poster for). Already-matched entries are skipped,
+// so it's safe to re-run after adding a film.
 //
 //   node scripts/fetch-posters.mjs            # fetch anything missing
 //   node scripts/fetch-posters.mjs --refresh  # re-fetch everything
@@ -22,8 +24,9 @@ const MANIFEST = path.join(ROOT, 'src', 'data', 'posters.json')
 const UA = 'movie.hovanhoa.net poster fetch (https://movie.hovanhoa.net)'
 const REFRESH = process.argv.includes('--refresh')
 
-// "<slug>/<title> (<year>)" (the manifest key) → Wikipedia article, or `null`
-// for no poster. Prefix with "vi:" for Vietnamese Wikipedia.
+// "<slug>/<title> (<year>)" (the manifest key) → Wikipedia article. `null`
+// skips Wikipedia (the other sources are still tried); `false` skips the
+// entry entirely. Prefix with "vi:" for Vietnamese Wikipedia.
 const OVERRIDES = {
     'fast-and-furious/The Fast and the Furious: Tokyo Drift (2006)':
         'The Fast and the Furious: Tokyo Drift',
@@ -39,7 +42,8 @@ const OVERRIDES = {
     'phim-vietnam/Tiệc trăng máu': 'vi:Tiệc trăng máu',
     // no Wikipedia article — the search lands on unrelated pages
     'phim-vietnam/Phi phong': null,
-    'pirates-of-the-caribbean/Phần 6': null,
+    // no title or poster announced yet
+    'pirates-of-the-caribbean/Phần 6': false,
     // only a sequel announcement — the search lands on the previous film
     'avatar/Avatar 4 (2029)': null,
     'avatar/Avatar 5 (2031)': null,
@@ -47,6 +51,14 @@ const OVERRIDES = {
 }
 
 const VI_SLUGS = new Set(['phim-vietnam'])
+
+// IMDb lists Vietnamese films under their English titles — and plan.md has no
+// year for them, so pin the release year the result must match
+const IMDB = {
+    'phim-vietnam/Nụ hôn bạc tỷ': ['Money Kisses', 2025],
+    'phim-vietnam/Phi phong': ['Phi Phong: The Blood Demon', 2026],
+    'phim-vietnam/Làm giàu với ma': ['Betting with Ghost', 2024],
+}
 
 async function api(lang, params) {
     const url = `https://${lang}.wikipedia.org/w/api.php?${new URLSearchParams({
@@ -78,6 +90,34 @@ async function search(lang, q) {
 // poster, which looks wrong in a poster slot
 const IMAGE_FIELD =
     /\|\s*(?:image|poster|hình|hình ảnh|image_file)\s*=\s*(?:\[\[)?(?:(?:File|Image|Tập tin|Hình):)?([^|\]\n]+?\.(?:jpe?g|png|webp|gif))/i
+
+async function imdb(query, year) {
+    const q = query
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/đ/gi, 'd')
+        .toLowerCase()
+    const res = await fetch(
+        `https://v3.sg.media-imdb.com/suggestion/x/${encodeURIComponent(q)}.json`,
+        { headers: { 'User-Agent': UA } }
+    )
+    if (!res.ok) return null
+    const { d = [] } = await res.json()
+    // no year to check against → too easy to grab the wrong title
+    if (!year) return null
+    const hit = d.find(
+        (x) =>
+            x.i?.imageUrl &&
+            /^(movie|feature|tvSeries|tvMiniSeries|TV series|TV mini-series)$/.test(
+                x.q ?? x.qid ?? ''
+            ) &&
+            Math.abs(x.y - Number(year)) <= 1
+    )
+    if (!hit) return null
+    // ask the image CDN for a 420px-wide rendition instead of the original
+    const url = hit.i.imageUrl.replace(/\._V1_.*\.jpg$/, '._V1_SX420.jpg')
+    return { source: `imdb:${hit.id} ${hit.l}`, url }
+}
 
 async function tvmaze(title, year) {
     const res = await fetch(
@@ -190,9 +230,10 @@ async function save(url, out) {
 function candidates(slug, e, key) {
     let lang = VI_SLUGS.has(slug) ? 'vi' : 'en'
     let article = OVERRIDES[key]
-    if (article === null) return []
+    if (article === false) return []
     if (article?.startsWith('vi:')) [lang, article] = ['vi', article.slice(3)]
     const wiki = async () => {
+        if (article === null) return []
         const a =
             article ??
             (await search(
@@ -224,7 +265,8 @@ function candidates(slug, e, key) {
                       ),
               ]
             : []
-    return [wiki, tv]
+    const [q, y] = IMDB[key] ?? [e.title, e.year]
+    return [wiki, [...tv, () => imdb(q, y)]]
 }
 
 const manifest = fs.existsSync(MANIFEST)
