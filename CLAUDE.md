@@ -26,7 +26,7 @@ npx wrangler deploy  # Deploy out/ to Cloudflare Workers (worker `movie`)
 ### Key Files
 
 - `src/app/page.tsx` — Netflix-style: compact header, `Billboard` (first Up next entry, else next release), franchise chips, then one horizontal `PosterRow` per franchise with more than 5 released entries, a shared "More sagas" row for the short ones (franchise labels double as `#slug` anchors), and a Coming soon row. `## ` groups show as slim vertical labels inside a row.
-- `src/components/poster-row.tsx` (client: native scroll-snap shelf, edge-aligned to the page container, hover arrows) / `poster-tile.tsx` (poster + watched check / up next / soon badge) / `billboard.tsx` / `poster.tsx` (greyscale when unwatched, typographic fallback) / `progress.tsx` / `status-pill.tsx`.
+- `src/components/poster-row.tsx` (client: shelf inside the page column that drifts on its own and loops — rows alternate direction via `reverse`; pauses on hover/focus/touch, resumes 2.5s after manual scroll or arrows; respects reduced motion. Looping needs an id-free `ghost` copy of the items, which page.tsx renders via `FranchiseTiles`/`MoreSagas`/`ComingTiles`; rows narrower than the column don't loop) / `poster-tile.tsx` (poster + watched check / up next / soon badge) / `billboard.tsx` / `poster.tsx` (greyscale when unwatched, typographic fallback) / `progress.tsx` / `status-pill.tsx`.
 - `src/components/nav.tsx` / `footer.tsx` — shared family chrome (mega-menu, dark-mode cookie synced across `*.hovanhoa.net`, footer link columns).
 
 ### Styling

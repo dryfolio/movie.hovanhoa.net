@@ -7,13 +7,19 @@ import { Poster } from '@/components/poster'
 export function PosterTile({
     entry: e,
     next = false,
+    ghost = false,
 }: {
     entry: Entry
     next?: boolean
+    /** The looping row's duplicate copy — hidden from assistive tech. */
+    ghost?: boolean
 }) {
     const watched = e.status === 'watched'
     return (
-        <li className="group/tile w-[clamp(100px,10.5vw,128px)] shrink-0 snap-start">
+        <li
+            aria-hidden={ghost || undefined}
+            className="group/tile w-[clamp(100px,10.5vw,128px)] shrink-0"
+        >
             <div className="relative transition-transform duration-300 ease-out group-hover/tile:-translate-y-1 group-hover/tile:scale-[1.03]">
                 <Poster
                     src={e.poster}

@@ -2,7 +2,13 @@ import { Billboard } from '@/components/billboard'
 import { PosterRow } from '@/components/poster-row'
 import { PosterTile } from '@/components/poster-tile'
 import { StatusPill } from '@/components/status-pill'
-import { COMING, FRANCHISES, TOTALS, UP_NEXT } from '@/data/movies'
+import {
+    COMING,
+    FRANCHISES,
+    TOTALS,
+    UP_NEXT,
+    type Franchise,
+} from '@/data/movies'
 import {
     FULL_NAME,
     GITHUB,
@@ -42,9 +48,8 @@ const SHORT = 5
 const BIG = FRANCHISES.filter((f) => f.released > SHORT)
 const SMALL = FRANCHISES.filter((f) => f.released <= SHORT)
 
-const nextOf = (f: (typeof FRANCHISES)[number]) =>
-    UP_NEXT.find((u) => u.franchise === f)?.entry
-const released = (f: (typeof FRANCHISES)[number]) =>
+const nextOf = (f: Franchise) => UP_NEXT.find((u) => u.franchise === f)?.entry
+const released = (f: Franchise) =>
     f.entries.filter((e) => e.status !== 'upcoming')
 
 export default function MovieLog() {
@@ -143,12 +148,13 @@ export default function MovieLog() {
 
             {/* ---- one shelf per franchise ---- */}
             <div className="mt-[clamp(1rem,2.5vw,1.75rem)]">
-                {BIG.map((f) => (
+                {BIG.map((f, row) => (
                     <PosterRow
                         key={f.slug}
                         id={f.slug}
                         title={f.title}
                         lang={f.lang}
+                        reverse={row % 2 === 1}
                         meta={
                             <>
                                 <span className="hidden sm:inline">
@@ -157,25 +163,16 @@ export default function MovieLog() {
                                 <StatusPill state={f.state} />
                             </>
                         }
+                        ghost={<FranchiseTiles f={f} ghost />}
                     >
-                        {released(f).map((e, i, all) => (
-                            <GroupedTile
-                                key={`${i}-${e.title}`}
-                                label={
-                                    e.group && e.group !== all[i - 1]?.group
-                                        ? e.group
-                                        : undefined
-                                }
-                            >
-                                <PosterTile entry={e} next={e === nextOf(f)} />
-                            </GroupedTile>
-                        ))}
+                        <FranchiseTiles f={f} />
                     </PosterRow>
                 ))}
 
                 {SMALL.length > 0 && (
                     <PosterRow
                         title="More sagas"
+                        reverse={BIG.length % 2 === 1}
                         meta={
                             <span>
                                 {SMALL.length} franchises ·{' '}
@@ -183,25 +180,9 @@ export default function MovieLog() {
                                 watched
                             </span>
                         }
+                        ghost={<MoreSagas ghost />}
                     >
-                        {SMALL.map((f) =>
-                            released(f).map((e, i) => (
-                                <GroupedTile
-                                    key={`${f.slug}-${i}`}
-                                    id={i === 0 ? f.slug : undefined}
-                                    label={
-                                        i === 0
-                                            ? `${f.title} ${f.watched}/${f.released}`
-                                            : undefined
-                                    }
-                                >
-                                    <PosterTile
-                                        entry={e}
-                                        next={e === nextOf(f)}
-                                    />
-                                </GroupedTile>
-                            ))
-                        )}
+                        <MoreSagas />
                     </PosterRow>
                 )}
 
@@ -209,26 +190,72 @@ export default function MovieLog() {
                     <PosterRow
                         id="coming"
                         title="Coming soon"
+                        reverse={BIG.length % 2 === 0}
                         meta={<span>{COMING.length} announced</span>}
+                        ghost={<ComingTiles ghost />}
                     >
-                        {COMING.map(({ franchise: f, entry: e }) => (
-                            <PosterTile
-                                key={`${f.slug}-${e.title}`}
-                                entry={{
-                                    ...e,
-                                    // show which saga it belongs to
-                                    kind: 'film',
-                                    year: [e.year, f.title]
-                                        .filter(Boolean)
-                                        .join(' · '),
-                                }}
-                            />
-                        ))}
+                        <ComingTiles />
                     </PosterRow>
                 )}
             </div>
         </main>
     )
+}
+
+// Each row renders its items twice — the real set and an id-free, aria-hidden
+// `ghost` copy that PosterRow appends so the drift can loop seamlessly.
+
+function FranchiseTiles({
+    f,
+    ghost = false,
+}: {
+    f: Franchise
+    ghost?: boolean
+}) {
+    return released(f).map((e, i, all) => (
+        <GroupedTile
+            key={`${i}-${e.title}`}
+            label={
+                e.group && e.group !== all[i - 1]?.group ? e.group : undefined
+            }
+        >
+            <PosterTile entry={e} next={e === nextOf(f)} ghost={ghost} />
+        </GroupedTile>
+    ))
+}
+
+function MoreSagas({ ghost = false }: { ghost?: boolean }) {
+    return SMALL.map((f) =>
+        released(f).map((e, i) => (
+            <GroupedTile
+                key={`${f.slug}-${i}`}
+                id={i === 0 && !ghost ? f.slug : undefined}
+                ghost={ghost}
+                label={
+                    i === 0
+                        ? `${f.title} ${f.watched}/${f.released}`
+                        : undefined
+                }
+            >
+                <PosterTile entry={e} next={e === nextOf(f)} ghost={ghost} />
+            </GroupedTile>
+        ))
+    )
+}
+
+function ComingTiles({ ghost = false }: { ghost?: boolean }) {
+    return COMING.map(({ franchise: f, entry: e }) => (
+        <PosterTile
+            key={`${f.slug}-${e.title}`}
+            ghost={ghost}
+            entry={{
+                ...e,
+                // show which saga it belongs to
+                kind: 'film',
+                year: [e.year, f.title].filter(Boolean).join(' · '),
+            }}
+        />
+    ))
 }
 
 // GroupedTile — prefixes a tile with a slim vertical label where a plan's
@@ -237,10 +264,12 @@ export default function MovieLog() {
 function GroupedTile({
     label,
     id,
+    ghost = false,
     children,
 }: {
     label?: string
     id?: string
+    ghost?: boolean
     children: React.ReactNode
 }) {
     if (!label) return <>{children}</>
@@ -249,8 +278,8 @@ function GroupedTile({
             <li
                 id={id}
                 // franchise labels name what follows; phase labels are decoration
-                aria-hidden={id ? undefined : true}
-                className="flex w-5 shrink-0 scroll-mt-24 snap-start items-start justify-center border-l border-[var(--rd-border)] pt-1"
+                aria-hidden={id && !ghost ? undefined : true}
+                className="flex w-5 shrink-0 scroll-mt-24 items-start justify-center border-l border-[var(--rd-border)] pt-1"
             >
                 <span className="font-[family-name:var(--font-mono)] text-[0.62rem] uppercase tracking-[0.14em] text-[var(--rd-text-3)] [writing-mode:vertical-rl]">
                     {label}
