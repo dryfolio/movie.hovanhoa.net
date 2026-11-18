@@ -1,0 +1,39 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Commands
+
+```bash
+npm run dev          # Start development server
+npm run build        # Static export to out/
+npm run lint         # ESLint
+npm run format       # Prettier (write)
+npx wrangler deploy  # Deploy out/ to Cloudflare Workers (worker `movie`)
+```
+
+## Architecture
+
+**Next.js 14 App Router** watch log, part of the `*.hovanhoa.net` subdomain family. Built as a static export (`output: 'export'`) and served by Cloudflare Workers (`wrangler.jsonc`) — pushing to main does not deploy.
+
+### Data
+
+- `content/<slug>/plan.md` — the source of truth: one markdown checklist per franchise (`- [x] Title (year)`, optional `## ` groups). Copied from the `hovanhoa/movie` repo.
+- `src/data/movies.ts` — parses every plan at build time into `FRANCHISES`, plus `TOTALS`, `UP_NEXT` (first unwatched released entry per franchise) and `COMING` (announced entries, soonest first). `META` holds each franchise's display order, description and optional title/`lang` overrides. Entry status is `watched` | `queued` | `upcoming`; upcoming = `chưa phát hành`/`dự kiến` in the trailing parenthetical, or a start year after the current year.
+
+### Key Files
+
+- `src/app/page.tsx` — header, Up next, franchise overview grid, one `FranchiseSection` per franchise, Coming soon.
+- `src/components/franchise-card.tsx` / `franchise-section.tsx` / `progress.tsx` / `status-pill.tsx`.
+- `src/components/nav.tsx` / `footer.tsx` — shared family chrome (mega-menu, dark-mode cookie synced across `*.hovanhoa.net`, footer link columns).
+
+### Styling
+
+Reuses the `--rd-*` design-token layer shared across the `hovanhoa.net` family: near-monochrome canvas, Geist Sans for prose, Geist Mono for meta, Libertinus Serif display headings, a single ember-orange accent (progress bars, watched checkmarks). Status pills use the category label colors (pill backgrounds only).
+
+Gotcha: Libertinus Serif's Vietnamese subset has no stacked diacritics (ệ, ộ …). Headings with Vietnamese text set `lang="vi"`, which `globals.css` maps to Noto Serif.
+
+### SEO Routes
+
+- `src/app/sitemap.ts`, `src/app/robot.ts`
+- `src/app/llms.txt/route.ts` — every list as a plain-text checklist
