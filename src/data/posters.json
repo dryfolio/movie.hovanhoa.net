@@ -1,0 +1,430 @@
+{
+  "avatar/Avatar (2009)": {
+    "src": "/posters/avatar/01.jpg",
+    "article": "en:Avatar (2009 film)"
+  },
+  "avatar/Avatar: The Way of Water (2022)": {
+    "src": "/posters/avatar/02.jpg",
+    "article": "en:Avatar: The Way of Water"
+  },
+  "avatar/Avatar: Fire and Ash (2025)": {
+    "src": "/posters/avatar/03.jpg",
+    "article": "en:Avatar: Fire and Ash"
+  },
+  "dune/Dune: Part One (2021)": {
+    "src": "/posters/dune/01.jpg",
+    "article": "en:Dune (2021 film)"
+  },
+  "dune/Dune: Part Two (2024)": {
+    "src": "/posters/dune/02.jpg",
+    "article": "en:Dune: Part Two"
+  },
+  "fast-and-furious/The Fast and the Furious (2001)": {
+    "src": "/posters/fast-and-furious/01.jpg",
+    "article": "en:The Fast and the Furious (2001 film)"
+  },
+  "fast-and-furious/2 Fast 2 Furious (2003)": {
+    "src": "/posters/fast-and-furious/02.jpg",
+    "article": "en:2 Fast 2 Furious"
+  },
+  "fast-and-furious/The Fast and the Furious: Tokyo Drift (2006)": {
+    "src": "/posters/fast-and-furious/03.jpg",
+    "article": "en:The Fast and the Furious: Tokyo Drift"
+  },
+  "fast-and-furious/Fast & Furious (2009)": {
+    "src": "/posters/fast-and-furious/04.jpg",
+    "article": "en:Fast & Furious (2009 film)"
+  },
+  "fast-and-furious/Fast Five (2011)": {
+    "src": "/posters/fast-and-furious/05.jpg",
+    "article": "en:Fast Five"
+  },
+  "fast-and-furious/Fast & Furious 6 (2013)": {
+    "src": "/posters/fast-and-furious/06.jpg",
+    "article": "en:Fast & Furious 6"
+  },
+  "fast-and-furious/Furious 7 (2015)": {
+    "src": "/posters/fast-and-furious/07.jpg",
+    "article": "en:Furious 7"
+  },
+  "fast-and-furious/The Fate of the Furious (2017)": {
+    "src": "/posters/fast-and-furious/08.jpg",
+    "article": "en:The Fate of the Furious"
+  },
+  "fast-and-furious/Fast & Furious Presents: Hobbs & Shaw (2019)": {
+    "src": "/posters/fast-and-furious/09.jpg",
+    "article": "en:Hobbs & Shaw"
+  },
+  "fast-and-furious/F9 (2021)": {
+    "src": "/posters/fast-and-furious/10.jpg",
+    "article": "en:F9 (film)"
+  },
+  "fast-and-furious/Fast X (2023)": {
+    "src": "/posters/fast-and-furious/11.jpg",
+    "article": "en:Fast X"
+  },
+  "frozen/Frozen (2013)": {
+    "src": "/posters/frozen/01.jpg",
+    "article": "en:Frozen (2013 film)"
+  },
+  "frozen/Olaf's Frozen Adventure (2017)": {
+    "src": "/posters/frozen/02.jpg",
+    "article": "en:Olaf's Frozen Adventure"
+  },
+  "frozen/Frozen II (2019)": {
+    "src": "/posters/frozen/03.jpg",
+    "article": "en:Frozen 2"
+  },
+  "harry-potter/Harry Potter and the Philosopher's Stone (2001)": {
+    "src": "/posters/harry-potter/01.jpg",
+    "article": "en:Harry Potter and the Philosopher's Stone (film)"
+  },
+  "harry-potter/Harry Potter and the Chamber of Secrets (2002)": {
+    "src": "/posters/harry-potter/02.jpg",
+    "article": "en:Harry Potter and the Chamber of Secrets (film)"
+  },
+  "harry-potter/Harry Potter and the Prisoner of Azkaban (2004)": {
+    "src": "/posters/harry-potter/03.jpg",
+    "article": "en:Harry Potter and the Prisoner of Azkaban (film)"
+  },
+  "harry-potter/Harry Potter and the Goblet of Fire (2005)": {
+    "src": "/posters/harry-potter/04.jpg",
+    "article": "en:Harry Potter and the Goblet of Fire (film)"
+  },
+  "harry-potter/Harry Potter and the Order of the Phoenix (2007)": {
+    "src": "/posters/harry-potter/05.jpg",
+    "article": "en:Harry Potter and the Order of the Phoenix (film)"
+  },
+  "harry-potter/Harry Potter and the Half-Blood Prince (2009)": {
+    "src": "/posters/harry-potter/06.jpg",
+    "article": "en:Harry Potter and the Half-Blood Prince (film)"
+  },
+  "harry-potter/Harry Potter and the Deathly Hallows: Part 1 (2010)": {
+    "src": "/posters/harry-potter/07.jpg",
+    "article": "en:Harry Potter and the Deathly Hallows – Part 1"
+  },
+  "harry-potter/Harry Potter and the Deathly Hallows: Part 2 (2011)": {
+    "src": "/posters/harry-potter/08.jpg",
+    "article": "en:Harry Potter and the Deathly Hallows – Part 2"
+  },
+  "lion-king/The Lion King (1994)": {
+    "src": "/posters/lion-king/01.jpg",
+    "article": "en:The Lion King"
+  },
+  "lion-king/The Lion King II: Simba's Pride (1998)": {
+    "src": "/posters/lion-king/02.jpg",
+    "article": "en:The Lion King II: Simba's Pride"
+  },
+  "lion-king/The Lion King 1½ (2004)": {
+    "src": "/posters/lion-king/03.jpg",
+    "article": "en:The Lion King 1½"
+  },
+  "lion-king/The Lion King (2019)": {
+    "src": "/posters/lion-king/04.jpg",
+    "article": "en:The Lion King (2019 film)"
+  },
+  "lion-king/Mufasa: The Lion King (2024)": {
+    "src": "/posters/lion-king/05.jpg",
+    "article": "en:Mufasa: The Lion King"
+  },
+  "marvel/Iron Man (2008)": {
+    "src": "/posters/marvel/01.jpg",
+    "article": "en:Iron Man (2008 film)"
+  },
+  "marvel/The Incredible Hulk (2008)": {
+    "src": "/posters/marvel/02.jpg",
+    "article": "en:The Incredible Hulk (film)"
+  },
+  "marvel/Iron Man 2 (2010)": {
+    "src": "/posters/marvel/03.jpg",
+    "article": "en:Iron Man 2"
+  },
+  "marvel/Thor (2011)": {
+    "src": "/posters/marvel/04.jpg",
+    "article": "en:Thor (film)"
+  },
+  "marvel/Captain America: The First Avenger (2011)": {
+    "src": "/posters/marvel/05.jpg",
+    "article": "en:Captain America: The First Avenger"
+  },
+  "marvel/The Avengers (2012)": {
+    "src": "/posters/marvel/06.jpg",
+    "article": "en:The Avengers (2012 film)"
+  },
+  "marvel/Iron Man 3 (2013)": {
+    "src": "/posters/marvel/07.jpg",
+    "article": "en:Iron Man 3"
+  },
+  "marvel/Thor: The Dark World (2013)": {
+    "src": "/posters/marvel/08.jpg",
+    "article": "en:Thor: The Dark World"
+  },
+  "marvel/Captain America: The Winter Soldier (2014)": {
+    "src": "/posters/marvel/09.jpg",
+    "article": "en:Captain America: The Winter Soldier"
+  },
+  "marvel/Guardians of the Galaxy (2014)": {
+    "src": "/posters/marvel/10.jpg",
+    "article": "en:Guardians of the Galaxy (film)"
+  },
+  "marvel/Ant-Man (2015)": {
+    "src": "/posters/marvel/12.jpg",
+    "article": "en:Ant-Man (film)"
+  },
+  "marvel/Captain America: Civil War (2016)": {
+    "src": "/posters/marvel/13.jpg",
+    "article": "en:Captain America: Civil War"
+  },
+  "marvel/Doctor Strange (2016)": {
+    "src": "/posters/marvel/14.jpg",
+    "article": "en:Doctor Strange (2016 film)"
+  },
+  "marvel/Guardians of the Galaxy Vol. 2 (2017)": {
+    "src": "/posters/marvel/15.jpg",
+    "article": "en:Guardians of the Galaxy Vol. 2"
+  },
+  "marvel/Spider-Man: Homecoming (2017)": {
+    "src": "/posters/marvel/16.jpg",
+    "article": "en:Spider-Man: Homecoming"
+  },
+  "marvel/Thor: Ragnarok (2017)": {
+    "src": "/posters/marvel/17.jpg",
+    "article": "en:Thor: Ragnarok"
+  },
+  "marvel/Black Panther (2018)": {
+    "src": "/posters/marvel/18.jpg",
+    "article": "en:Black Panther (film)"
+  },
+  "marvel/Avengers: Infinity War (2018)": {
+    "src": "/posters/marvel/19.jpg",
+    "article": "en:Avengers: Infinity War"
+  },
+  "marvel/Ant-Man and the Wasp (2018)": {
+    "src": "/posters/marvel/20.jpg",
+    "article": "en:Ant-Man and the Wasp"
+  },
+  "marvel/Captain Marvel (2019)": {
+    "src": "/posters/marvel/21.jpg",
+    "article": "en:Captain Marvel (film)"
+  },
+  "marvel/Avengers: Endgame (2019)": {
+    "src": "/posters/marvel/22.jpg",
+    "article": "en:Avengers: Endgame"
+  },
+  "marvel/Spider-Man: Far From Home (2019)": {
+    "src": "/posters/marvel/23.jpg",
+    "article": "en:Spider-Man: Far From Home"
+  },
+  "marvel/Loki (Season 1) (2021)": {
+    "src": "/posters/marvel/26.jpg",
+    "article": "en:Loki season 1"
+  },
+  "marvel/Black Widow (2021)": {
+    "src": "/posters/marvel/27.jpg",
+    "article": "en:Black Widow (2021 film)"
+  },
+  "marvel/What If...? (Season 1) (2021)": {
+    "src": "/posters/marvel/28.jpg",
+    "article": "en:What If...? season 1"
+  },
+  "marvel/Shang-Chi and the Legend of the Ten Rings (2021)": {
+    "src": "/posters/marvel/29.jpg",
+    "article": "en:Shang-Chi and the Legend of the Ten Rings"
+  },
+  "marvel/Eternals (2021)": {
+    "src": "/posters/marvel/30.jpg",
+    "article": "en:Eternals (film)"
+  },
+  "marvel/Spider-Man: No Way Home (2021)": {
+    "src": "/posters/marvel/32.jpg",
+    "article": "en:Spider-Man: No Way Home"
+  },
+  "marvel/Doctor Strange in the Multiverse of Madness (2022)": {
+    "src": "/posters/marvel/34.jpg",
+    "article": "en:Doctor Strange in the Multiverse of Madness"
+  },
+  "marvel/Thor: Love and Thunder (2022)": {
+    "src": "/posters/marvel/36.jpg",
+    "article": "en:Thor: Love and Thunder"
+  },
+  "marvel/Werewolf by Night (2022)": {
+    "src": "/posters/marvel/38.jpg",
+    "article": "en:Werewolf by Night (TV special)"
+  },
+  "marvel/Black Panther: Wakanda Forever (2022)": {
+    "src": "/posters/marvel/39.jpg",
+    "article": "en:Black Panther: Wakanda Forever"
+  },
+  "marvel/Guardians of the Galaxy Holiday Special (2022)": {
+    "src": "/posters/marvel/40.jpg",
+    "article": "en:The Guardians of the Galaxy Holiday Special"
+  },
+  "marvel/Ant-Man and the Wasp: Quantumania (2023)": {
+    "src": "/posters/marvel/41.jpg",
+    "article": "en:Ant-Man and the Wasp: Quantumania"
+  },
+  "marvel/Guardians of the Galaxy Vol. 3 (2023)": {
+    "src": "/posters/marvel/43.jpg",
+    "article": "en:Guardians of the Galaxy Vol. 3"
+  },
+  "marvel/Loki (Season 2) (2023)": {
+    "src": "/posters/marvel/45.jpg",
+    "article": "en:Loki season 2"
+  },
+  "marvel/The Marvels (2023)": {
+    "src": "/posters/marvel/46.jpg",
+    "article": "en:The Marvels"
+  },
+  "marvel/Deadpool & Wolverine (2024)": {
+    "src": "/posters/marvel/48.jpg",
+    "article": "en:Deadpool & Wolverine"
+  },
+  "marvel/What If...? (Season 2 & 3) (2023)": {
+    "src": "/posters/marvel/49.jpg",
+    "article": "en:What If...? season 2"
+  },
+  "marvel/Captain America: Brave New World (2025)": {
+    "src": "/posters/marvel/51.jpg",
+    "article": "en:Captain America: Brave New World"
+  },
+  "marvel/Thunderbolts* (2025)": {
+    "src": "/posters/marvel/52.jpg",
+    "article": "en:Thunderbolts*"
+  },
+  "marvel/The Fantastic Four: First Steps (2025)": {
+    "src": "/posters/marvel/54.jpg",
+    "article": "en:The Fantastic Four: First Steps"
+  },
+  "marvel/Avengers: Doomsday (2026)": {
+    "src": "/posters/marvel/55.jpg",
+    "article": "en:Avengers: Doomsday"
+  },
+  "phim-vietnam/Mưa đỏ": {
+    "src": "/posters/phim-vietnam/01.jpg",
+    "article": "vi:Mưa đỏ (phim)"
+  },
+  "phim-vietnam/Mai": {
+    "src": "/posters/phim-vietnam/02.jpg",
+    "article": "vi:Mai (phim)"
+  },
+  "phim-vietnam/Trại buôn người": {
+    "src": "/posters/phim-vietnam/03.jpg",
+    "article": "vi:Trại buôn người"
+  },
+  "phim-vietnam/Lật mặt 7: Một điều ước": {
+    "src": "/posters/phim-vietnam/04.jpg",
+    "article": "vi:Lật mặt 7: Một điều ước"
+  },
+  "phim-vietnam/Nhà bà Nữ": {
+    "src": "/posters/phim-vietnam/05.jpg",
+    "article": "vi:Nhà bà Nữ"
+  },
+  "phim-vietnam/Thỏ ơi!!": {
+    "src": "/posters/phim-vietnam/06.jpg",
+    "article": "vi:Thỏ ơi!!"
+  },
+  "phim-vietnam/Bố già": {
+    "src": "/posters/phim-vietnam/07.jpg",
+    "article": "vi:Bố già (phim 2021)"
+  },
+  "phim-vietnam/Mắt biếc": {
+    "src": "/posters/phim-vietnam/10.jpg",
+    "article": "vi:Mắt biếc (phim)"
+  },
+  "phim-vietnam/Tiệc trăng máu": {
+    "src": "/posters/phim-vietnam/11.jpg",
+    "article": "vi:Tiệc trăng máu"
+  },
+  "phim-vietnam/Cua lại vợ bầu": {
+    "src": "/posters/phim-vietnam/12.jpg",
+    "article": "vi:Cua lại vợ bầu"
+  },
+  "phim-vietnam/Tử chiến trên không": {
+    "src": "/posters/phim-vietnam/14.jpg",
+    "article": "vi:Tử chiến trên không"
+  },
+  "phim-vietnam/Thám tử Kiên: Kỳ án không đầu": {
+    "src": "/posters/phim-vietnam/15.jpg",
+    "article": "vi:Thám tử Kiên: Kỳ án không đầu"
+  },
+  "pirates-of-the-caribbean/The Curse of the Black Pearl (2003)": {
+    "src": "/posters/pirates-of-the-caribbean/01.jpg",
+    "article": "en:Pirates of the Caribbean: The Curse of the Black Pearl"
+  },
+  "pirates-of-the-caribbean/Dead Man's Chest (2006)": {
+    "src": "/posters/pirates-of-the-caribbean/02.jpg",
+    "article": "en:Pirates of the Caribbean: Dead Man's Chest"
+  },
+  "pirates-of-the-caribbean/At World's End (2007)": {
+    "src": "/posters/pirates-of-the-caribbean/03.jpg",
+    "article": "en:Pirates of the Caribbean: At World's End"
+  },
+  "pirates-of-the-caribbean/On Stranger Tides (2011)": {
+    "src": "/posters/pirates-of-the-caribbean/04.jpg",
+    "article": "en:Pirates of the Caribbean: On Stranger Tides"
+  },
+  "pirates-of-the-caribbean/Dead Men Tell No Tales (2017)": {
+    "src": "/posters/pirates-of-the-caribbean/05.jpg",
+    "article": "en:Pirates of the Caribbean: Dead Men Tell No Tales"
+  },
+  "star-wars/Episode IV: A New Hope (1977)": {
+    "src": "/posters/star-wars/01.jpg",
+    "article": "en:Star Wars (film)"
+  },
+  "star-wars/Episode V: The Empire Strikes Back (1980)": {
+    "src": "/posters/star-wars/02.jpg",
+    "article": "en:The Empire Strikes Back"
+  },
+  "star-wars/Episode VI: Return of the Jedi (1983)": {
+    "src": "/posters/star-wars/03.jpg",
+    "article": "en:Return of the Jedi"
+  },
+  "star-wars/Episode I: The Phantom Menace (1999)": {
+    "src": "/posters/star-wars/04.jpg",
+    "article": "en:Star Wars: Episode I – The Phantom Menace"
+  },
+  "star-wars/Episode II: Attack of the Clones (2002)": {
+    "src": "/posters/star-wars/05.jpg",
+    "article": "en:Star Wars: Episode II – Attack of the Clones"
+  },
+  "star-wars/Episode III: Revenge of the Sith (2005)": {
+    "src": "/posters/star-wars/06.jpg",
+    "article": "en:Star Wars: Episode III – Revenge of the Sith (video game)"
+  },
+  "star-wars/Episode VII: The Force Awakens (2015)": {
+    "src": "/posters/star-wars/07.jpg",
+    "article": "en:Star Wars: The Force Awakens"
+  },
+  "star-wars/Rogue One: A Star Wars Story (2016)": {
+    "src": "/posters/star-wars/08.jpg",
+    "article": "en:Rogue One"
+  },
+  "star-wars/Episode VIII: The Last Jedi (2017)": {
+    "src": "/posters/star-wars/09.jpg",
+    "article": "en:Star Wars: The Last Jedi"
+  },
+  "star-wars/Solo: A Star Wars Story (2018)": {
+    "src": "/posters/star-wars/10.jpg",
+    "article": "en:Solo: A Star Wars Story"
+  },
+  "star-wars/Episode IX: The Rise of Skywalker (2019)": {
+    "src": "/posters/star-wars/11.jpg",
+    "article": "en:Star Wars: The Rise of Skywalker"
+  },
+  "titanic/Titanic (1997)": {
+    "src": "/posters/titanic/01.jpg",
+    "article": "en:Titanic (1997 film)"
+  },
+  "zootopia/Zootopia (2016)": {
+    "src": "/posters/zootopia/01.jpg",
+    "article": "en:Zootopia"
+  },
+  "zootopia/Zootopia 2 (2025)": {
+    "src": "/posters/zootopia/02.jpg",
+    "article": "en:Zootopia 2"
+  },
+  "marvel/Avengers: Age of Ultron (2015)": {
+    "src": "/posters/marvel/11.jpg",
+    "article": "en:Avengers: Age of Ultron"
+  }
+}

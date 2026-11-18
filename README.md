@@ -26,6 +26,14 @@ Every list is a plain markdown checklist in `content/<slug>/plan.md`:
 - `## ` headings split a list into groups (Marvel phases, Star Wars films/series).
 - A new folder shows up automatically; add it to `META` in `src/data/movies.ts` for its description and position.
 
+## Posters
+
+```bash
+node scripts/fetch-posters.mjs   # macOS (uses sips)
+```
+
+Looks up each entry on Wikipedia (vi.wikipedia for `phim-vietnam`), takes the infobox poster, and saves a ≤420px JPEG to `public/posters/<slug>/` plus a manifest in `src/data/posters.json`. Only missing entries are fetched; `--refresh` redoes everything. Wide 16:9 title cards (common for Disney+ series) are skipped, and entries without a poster show an initial tile instead. When the search lands on the wrong article, pin the right one in `OVERRIDES` at the top of the script. Run it after adding a new film, then commit the images.
+
 ## Deploy
 
 Static export served by Cloudflare Workers:

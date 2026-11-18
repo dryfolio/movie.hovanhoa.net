@@ -2,6 +2,7 @@ import type { Entry, Franchise } from '@/data/movies'
 import { SectionHead } from '@/components/section-head'
 import { StatusPill } from '@/components/status-pill'
 import { Progress } from '@/components/progress'
+import { Poster } from '@/components/poster'
 
 function Mark({ status }: { status: Entry['status'] }) {
     if (status === 'watched')
@@ -38,10 +39,11 @@ function Mark({ status }: { status: Entry['status'] }) {
 function EntryRow({ entry: e, n }: { entry: Entry; n: number }) {
     const dim = e.status !== 'watched'
     return (
-        <li className="flex min-w-0 items-center gap-3 border-b border-[var(--rd-line)] py-2.5">
+        <li className="flex min-w-0 items-center gap-3 border-b border-[var(--rd-line)] py-2">
             <span className="w-6 shrink-0 text-right font-[family-name:var(--font-mono)] text-[0.68rem] tabular-nums text-[var(--rd-text-4)]">
                 {String(n).padStart(2, '0')}
             </span>
+            <Poster src={e.poster} title={e.title} width={26} dim={dim} />
             <Mark status={e.status} />
             <span
                 className={`min-w-0 flex-1 text-[0.9rem] leading-[1.35] tracking-[-0.01em] ${

@@ -1,5 +1,6 @@
 import fs from 'node:fs'
 import path from 'node:path'
+import POSTERS from './posters.json'
 
 // Every list lives in content/<slug>/plan.md — a plain markdown checklist
 // (`- [x] Title (year)`). This module parses them at build time; the page
@@ -18,6 +19,8 @@ export type Entry = {
     note?: string
     status: EntryStatus
     group?: string
+    /** Local poster path from scripts/fetch-posters.mjs, when one was found. */
+    poster?: string
 }
 
 export type FranchiseState = 'complete' | 'watching' | 'queued'
@@ -29,6 +32,8 @@ export type Franchise = {
     /** Set for non-English titles so headings can pick a font that covers them. */
     lang?: string
     entries: Entry[]
+    /** Posters of the released entries, in release order. */
+    posters: string[]
     groups: string[]
     watched: number
     /** Released entries — the denominator for progress. */
@@ -130,6 +135,15 @@ function parseEntry(line: string, group?: string): Entry | null {
     }
 }
 
+const POSTER_MAP = POSTERS as Record<string, { src: string }>
+
+// same key scripts/fetch-posters.mjs writes: "<slug>/<title> (<first year>)"
+function posterFor(slug: string, e: Entry) {
+    return POSTER_MAP[
+        `${slug}/${e.title}${e.startYear ? ` (${e.startYear})` : ''}`
+    ]?.src
+}
+
 function parsePlan(slug: string, md: string): Franchise {
     const lines = md.split('\n')
     const h1 = lines.find((l) => l.startsWith('# '))
@@ -149,7 +163,7 @@ function parsePlan(slug: string, md: string): Franchise {
             continue
         }
         const e = parseEntry(line.trim(), group)
-        if (e) entries.push(e)
+        if (e) entries.push({ ...e, poster: posterFor(slug, e) })
     }
     const watched = entries.filter((e) => e.status === 'watched').length
     const upcoming = entries.filter((e) => e.status === 'upcoming').length
@@ -165,6 +179,9 @@ function parsePlan(slug: string, md: string): Franchise {
         desc: meta?.desc ?? '',
         lang: meta?.lang,
         entries,
+        posters: entries.flatMap((e) =>
+            e.poster && e.status !== 'upcoming' ? [e.poster] : []
+        ),
         groups,
         watched,
         released,

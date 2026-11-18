@@ -2,6 +2,8 @@ import { FranchiseCard } from '@/components/franchise-card'
 import { FranchiseSection } from '@/components/franchise-section'
 import { SectionHead } from '@/components/section-head'
 import { Reveal } from '@/components/redesign/reveal'
+import { Poster } from '@/components/poster'
+import { PosterStrip } from '@/components/poster-strip'
 import { COMING, FRANCHISES, TOTALS, UP_NEXT } from '@/data/movies'
 import {
     FULL_NAME,
@@ -26,6 +28,13 @@ export const metadata: Metadata = {
 }
 
 const complete = FRANCHISES.filter((f) => f.state === 'complete').length
+
+// every watched poster, newest release first
+const REEL = FRANCHISES.flatMap((f) =>
+    f.entries.filter((e) => e.status === 'watched' && e.poster)
+)
+    .sort((a, b) => (b.startYear ?? 0) - (a.startYear ?? 0))
+    .map((e) => ({ src: e.poster as string, title: e.title }))
 
 const SECTION =
     'mx-auto max-w-[var(--rd-maxw)] px-[var(--rd-pad)] py-[clamp(40px,5vw,64px)]'
@@ -116,6 +125,11 @@ export default function MovieLog() {
                 </div>
             </section>
 
+            {/* ---- poster reel ---- */}
+            <div className="mx-auto max-w-[var(--rd-maxw)] px-[var(--rd-pad)] pb-[clamp(2.5rem,5vw,4rem)]">
+                <PosterStrip posters={REEL} />
+            </div>
+
             {/* ---- up next ---- */}
             {UP_NEXT.length > 0 && (
                 <section
@@ -136,6 +150,11 @@ export default function MovieLog() {
                                     href={`#${f.slug}`}
                                     className="flex min-w-0 items-center gap-4 px-[1.15rem] py-4 transition-colors hover:bg-[var(--rd-surface-2)]"
                                 >
+                                    <Poster
+                                        src={e.poster}
+                                        title={e.title}
+                                        width={48}
+                                    />
                                     <div className="min-w-0 flex-1">
                                         <p className="m-0 font-[family-name:var(--font-mono)] text-[0.72rem] text-[var(--rd-text-3)]">
                                             {f.title} · {f.watched}/{f.released}{' '}
