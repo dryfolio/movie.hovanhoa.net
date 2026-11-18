@@ -226,13 +226,18 @@ export default function MovieLog() {
                             {COMING.map(({ franchise: f, entry: e }) => (
                                 <li
                                     key={`${f.slug}-${e.title}`}
-                                    className="flex items-baseline gap-4 rounded-[var(--rd-r)] border border-dashed border-[var(--rd-border-2)] px-4 py-3.5"
+                                    className="flex items-center gap-4 rounded-[var(--rd-r)] border border-dashed border-[var(--rd-border-2)] p-3"
                                 >
-                                    <span className="w-[3.2rem] shrink-0 font-[family-name:var(--font-display)] text-[1.35rem] leading-none tracking-[-0.03em] text-[var(--rd-text)]">
-                                        {e.startYear ?? 'tba'}
-                                    </span>
+                                    <Poster
+                                        src={e.poster}
+                                        title={e.title}
+                                        width={56}
+                                    />
                                     <span className="min-w-0">
-                                        <span className="block text-[0.9rem] font-medium leading-[1.3] tracking-[-0.01em] text-[var(--rd-text)]">
+                                        <span className="block font-[family-name:var(--font-display)] text-[1.35rem] leading-none tracking-[-0.03em] text-[var(--rd-text)]">
+                                            {e.startYear ?? 'tba'}
+                                        </span>
+                                        <span className="mt-2 block text-[0.9rem] font-medium leading-[1.3] tracking-[-0.01em] text-[var(--rd-text)]">
                                             {e.title}
                                         </span>
                                         <span className="mt-0.5 block font-[family-name:var(--font-mono)] text-[0.7rem] text-[var(--rd-text-3)]">

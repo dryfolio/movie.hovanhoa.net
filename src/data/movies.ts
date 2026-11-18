@@ -75,7 +75,7 @@ const META: Record<string, Meta> = {
     },
     marvel: {
         title: 'Marvel Cinematic Universe',
-        desc: 'The full MCU in release order, films and Disney+ series. Not started yet — this is the big one.',
+        desc: 'The full MCU in release order, films and Disney+ series — all caught up, waiting on Doomsday.',
     },
 }
 

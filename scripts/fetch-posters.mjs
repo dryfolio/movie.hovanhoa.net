@@ -1,7 +1,8 @@
-// Downloads a poster for every entry in content/*/plan.md from Wikipedia's
-// infobox image (en.wikipedia, or vi.wikipedia for Vietnamese films) into
-// public/posters/<slug>/<n>.<ext>, and records the matches in
-// src/data/posters.json. Already-matched entries are skipped, so it's safe to
+// Downloads a poster for every entry in content/*/plan.md into
+// public/posters/<slug>/<file>.jpg and records the matches in
+// src/data/posters.json. Sources, in order: the Wikipedia infobox image
+// (vi.wikipedia for Vietnamese films), the article's "season 1" page, then
+// TVmaze (Disney+/HBO series whose Wikipedia infobox is only a logo). Already-matched entries are skipped, so it's safe to
 // re-run after adding a film.
 //
 //   node scripts/fetch-posters.mjs            # fetch anything missing
@@ -38,6 +39,10 @@ const OVERRIDES = {
     'phim-vietnam/Tiệc trăng máu': 'vi:Tiệc trăng máu',
     // no Wikipedia article — the search lands on unrelated pages
     'phim-vietnam/Phi phong': null,
+    'pirates-of-the-caribbean/Phần 6': null,
+    // only a sequel announcement — the search lands on the previous film
+    'avatar/Avatar 4 (2029)': null,
+    'avatar/Avatar 5 (2031)': null,
     'phim-vietnam/Làm giàu với ma': null,
 }
 
@@ -74,6 +79,20 @@ async function search(lang, q) {
 const IMAGE_FIELD =
     /\|\s*(?:image|poster|hình|hình ảnh|image_file)\s*=\s*(?:\[\[)?(?:(?:File|Image|Tập tin|Hình):)?([^|\]\n]+?\.(?:jpe?g|png|webp|gif))/i
 
+async function tvmaze(title, year) {
+    const res = await fetch(
+        `https://api.tvmaze.com/singlesearch/shows?${new URLSearchParams({ q: title })}`,
+        { headers: { 'User-Agent': UA } }
+    )
+    if (!res.ok) return null
+    const show = await res.json()
+    const premiered = Number(show.premiered?.slice(0, 4))
+    // the fuzzy search happily returns an unrelated show — require the year
+    if (year && Math.abs(premiered - Number(year)) > 1) return null
+    const url = show.image?.original
+    return url ? { source: `tvmaze:${show.name}`, url } : null
+}
+
 async function posterFor(lang, title) {
     const r = await api(lang, {
         action: 'query',
@@ -96,7 +115,9 @@ async function posterFor(lang, title) {
     })
     const info = ii.query.pages[0].imageinfo?.[0]
     const url = info?.thumburl ?? info?.url
-    return url ? { article: page.title, file, url: url.split('?')[0] } : null
+    return url
+        ? { source: `${lang}:${page.title}`, url: url.split('?')[0] }
+        : null
 }
 
 function entries(slug) {
@@ -114,7 +135,6 @@ function entries(slug) {
                 ? tail[1]
                 : ''
         const title = meta ? raw.slice(0, tail.index).trim() : raw
-        if (/chưa phát hành/i.test(meta)) continue
         const year = meta.match(/\d{4}/)?.[0] ?? ''
         const series =
             /series/i.test(meta) ||
@@ -123,6 +143,88 @@ function entries(slug) {
         out.push({ title, year, series })
     }
     return out
+}
+
+const slugify = (t) =>
+    t
+        .normalize('NFD')
+        .replace(/[̀-ͯ]/g, '')
+        .replace(/đ/gi, 'd')
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-|-$/g, '')
+
+// downloads `url`, normalises it to a ≤420px JPEG (macOS `sips`) and
+// returns its [width, height]
+async function save(url, out) {
+    const res = await fetch(url, { headers: { 'User-Agent': UA } })
+    if (!res.ok) throw new Error(`download ${res.status}`)
+    const tmp = `${out}.tmp${path.extname(new URL(url).pathname)}`
+    fs.writeFileSync(tmp, Buffer.from(await res.arrayBuffer()))
+    execFileSync(
+        'sips',
+        [
+            '-s',
+            'format',
+            'jpeg',
+            '-s',
+            'formatOptions',
+            '78',
+            '-Z',
+            '420',
+            tmp,
+            '--out',
+            out,
+        ],
+        { stdio: 'ignore' }
+    )
+    fs.unlinkSync(tmp)
+    return execFileSync('sips', ['-g', 'pixelWidth', '-g', 'pixelHeight', out])
+        .toString()
+        .match(/\d+(?=\n)/g)
+        .map(Number)
+}
+
+// candidate lookups for one entry, tried in order until one yields a
+// portrait poster
+function candidates(slug, e, key) {
+    let lang = VI_SLUGS.has(slug) ? 'vi' : 'en'
+    let article = OVERRIDES[key]
+    if (article === null) return []
+    if (article?.startsWith('vi:')) [lang, article] = ['vi', article.slice(3)]
+    const wiki = async () => {
+        const a =
+            article ??
+            (await search(
+                lang,
+                lang === 'vi'
+                    ? `${e.title} phim`
+                    : `${e.title} ${e.year} ${e.series ? 'TV series' : 'film'}`
+            ))
+        if (!a) return []
+        const list = [() => posterFor(lang, a)]
+        if (lang === 'en')
+            list.push(() =>
+                posterFor(
+                    lang,
+                    `${a.replace(/ \((?:TV series|miniseries)\)$/, '')} season 1`
+                )
+            )
+        return list
+    }
+    const prefix =
+        slug === 'star-wars' && !/star wars/i.test(e.title) ? 'Star Wars: ' : ''
+    const tv =
+        lang === 'en'
+            ? [
+                  () =>
+                      tvmaze(
+                          prefix + e.title.replace(/ \(Season.*\)$/, ''),
+                          e.year
+                      ),
+              ]
+            : []
+    return [wiki, tv]
 }
 
 const manifest = fs.existsSync(MANIFEST)
@@ -134,81 +236,42 @@ const slugs = fs
     .sort()
 
 for (const slug of slugs) {
-    const list = entries(slug)
-    for (const [i, e] of list.entries()) {
+    for (const e of entries(slug)) {
         const key = `${slug}/${e.title}${e.year ? ` (${e.year})` : ''}`
         if (manifest[key] && !REFRESH) continue
+        const [wiki, tv] = candidates(slug, e, key)
+        if (!wiki) continue
+        const rel = `${slug}/${slugify(e.title)}${e.year ? `-${e.year}` : ''}.jpg`
+        const out = path.join(OUT, rel)
+        fs.mkdirSync(path.dirname(out), { recursive: true })
+        let found = null
+        const tried = []
         try {
-            let lang = VI_SLUGS.has(slug) ? 'vi' : 'en'
-            let article = OVERRIDES[key]
-            if (article === null) continue
-            if (article?.startsWith('vi:'))
-                [lang, article] = ['vi', article.slice(3)]
-            if (!article) {
-                const q =
-                    lang === 'vi'
-                        ? `${e.title} phim`
-                        : `${e.title} ${e.year} ${e.series ? 'TV series' : 'film'}`
-                article = await search(lang, q)
+            for (const find of [...(await wiki()), ...tv]) {
+                const p = await find()
+                if (!p) continue
+                const [w, h] = await save(p.url, out)
+                // 16:9 title cards and logos aren't posters
+                if (h / w < 0.7) {
+                    tried.push(`${p.source} (title card)`)
+                    continue
+                }
+                found = p
+                break
             }
-            const p = article && (await posterFor(lang, article))
-            if (!p) {
-                console.log(
-                    `  – ${key}: no poster (${article ?? 'no article'})`
-                )
-                continue
-            }
-            const res = await fetch(p.url, { headers: { 'User-Agent': UA } })
-            if (!res.ok) throw new Error(`download ${res.status}`)
-            fs.mkdirSync(path.join(OUT, slug), { recursive: true })
-            const rel = `${slug}/${String(i + 1).padStart(2, '0')}.jpg`
-            const tmp = path.join(OUT, `${rel}.tmp${path.extname(p.url)}`)
-            fs.writeFileSync(tmp, Buffer.from(await res.arrayBuffer()))
-            // macOS `sips`: normalise to a ≤420px JPEG
-            execFileSync(
-                'sips',
-                [
-                    '-s',
-                    'format',
-                    'jpeg',
-                    '-s',
-                    'formatOptions',
-                    '78',
-                    '-Z',
-                    '420',
-                    tmp,
-                    '--out',
-                    path.join(OUT, rel),
-                ],
-                { stdio: 'ignore' }
-            )
-            fs.unlinkSync(tmp)
-            // TV series often only have a 16:9 title card — not a poster
-            const dims = execFileSync('sips', [
-                '-g',
-                'pixelWidth',
-                '-g',
-                'pixelHeight',
-                path.join(OUT, rel),
-            ])
-                .toString()
-                .match(/\d+(?=\n)/g)
-                .map(Number)
-            if (dims[1] / dims[0] < 0.7) {
-                fs.unlinkSync(path.join(OUT, rel))
-                console.log(
-                    `  – ${key}: title card, not a poster (${lang}:${p.article})`
-                )
-                continue
-            }
-            manifest[key] = {
-                src: `/posters/${rel}`,
-                article: `${lang}:${p.article}`,
-            }
-            console.log(`  ✓ ${key} ← ${lang}:${p.article}`)
         } catch (err) {
             console.log(`  ! ${key}: ${err.message}`)
+            continue
         }
+        if (!found) {
+            if (fs.existsSync(out)) fs.unlinkSync(out)
+            console.log(
+                `  – ${key}: no poster${tried.length ? ` — ${tried.join(', ')}` : ''}`
+            )
+            continue
+        }
+        manifest[key] = { src: `/posters/${rel}`, source: found.source }
+        console.log(`  ✓ ${key} ← ${found.source}`)
     }
 }
 
