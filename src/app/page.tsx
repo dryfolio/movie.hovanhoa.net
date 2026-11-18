@@ -1,9 +1,7 @@
-import { FranchiseCard } from '@/components/franchise-card'
-import { FranchiseSection } from '@/components/franchise-section'
-import { SectionHead } from '@/components/section-head'
-import { Reveal } from '@/components/redesign/reveal'
-import { Poster } from '@/components/poster'
-import { PosterStrip } from '@/components/poster-strip'
+import { Billboard } from '@/components/billboard'
+import { PosterRow } from '@/components/poster-row'
+import { PosterTile } from '@/components/poster-tile'
+import { StatusPill } from '@/components/status-pill'
 import { COMING, FRANCHISES, TOTALS, UP_NEXT } from '@/data/movies'
 import {
     FULL_NAME,
@@ -29,19 +27,29 @@ export const metadata: Metadata = {
 
 const complete = FRANCHISES.filter((f) => f.state === 'complete').length
 
-// every watched poster, newest release first
-const REEL = FRANCHISES.flatMap((f) =>
-    f.entries.filter((e) => e.status === 'watched' && e.poster)
-)
-    .sort((a, b) => (b.startYear ?? 0) - (a.startYear ?? 0))
-    .map((e) => ({ src: e.poster as string, title: e.title }))
+// billboard: the next thing to watch, else the next thing coming out
+const FEATURE = UP_NEXT[0]
+    ? { ...UP_NEXT[0], eyebrow: 'Up next' }
+    : COMING[0]
+      ? { ...COMING[0], eyebrow: 'Coming soon' }
+      : null
 
-const SECTION =
-    'mx-auto max-w-[var(--rd-maxw)] px-[var(--rd-pad)] py-[clamp(40px,5vw,64px)]'
+const WRAP = 'mx-auto max-w-[var(--rd-maxw)] px-[var(--rd-pad)]'
+
+// sagas with only a few entries share one shelf instead of a near-empty row
+// each; bigger ones get their own
+const SHORT = 5
+const BIG = FRANCHISES.filter((f) => f.released > SHORT)
+const SMALL = FRANCHISES.filter((f) => f.released <= SHORT)
+
+const nextOf = (f: (typeof FRANCHISES)[number]) =>
+    UP_NEXT.find((u) => u.franchise === f)?.entry
+const released = (f: (typeof FRANCHISES)[number]) =>
+    f.entries.filter((e) => e.status !== 'upcoming')
 
 export default function MovieLog() {
     return (
-        <main className="relative min-h-screen bg-[var(--rd-bg)] text-[var(--rd-text)]">
+        <main className="relative min-h-screen overflow-x-clip bg-[var(--rd-bg)] pb-[clamp(2rem,5vw,4rem)] text-[var(--rd-text)]">
             <script
                 type="application/ld+json"
                 suppressHydrationWarning
@@ -67,189 +75,188 @@ export default function MovieLog() {
                     }),
                 }}
             />
-
             {/* ---- page header ---- */}
-            <section className="mx-auto w-full max-w-[var(--rd-maxw)] px-[var(--rd-pad)] pb-[clamp(2rem,4vw,3rem)] pt-[clamp(3.5rem,8vw,6.5rem)]">
-                <div className="rd-rise max-w-[46rem]">
-                    <h1 className="rd-display m-0 text-[var(--rd-text)]">
-                        What I&apos;ve watched
-                    </h1>
-                    <p className="m-0 mt-[clamp(1.1rem,2vw,1.5rem)] max-w-[56ch] text-pretty text-[clamp(0.98rem,1.25vw,1.0625rem)] leading-[1.65] text-[var(--rd-text-2)]">
-                        A watch log for the sagas I follow, every entry in
-                        release order. Ticked off one at a time, from a galaxy
-                        far, far away to a long weekend of Vietnamese cinema.
-                    </p>
-                    <div className="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 font-[family-name:var(--font-mono)] text-[0.72rem] text-[var(--rd-text-3)]">
+            <section
+                className={`${WRAP} pb-[clamp(1.25rem,3vw,2rem)] pt-[clamp(2.5rem,6vw,4.5rem)]`}
+            >
+                <div className="rd-rise flex flex-wrap items-end justify-between gap-x-8 gap-y-3">
+                    <div className="max-w-[40rem]">
+                        <h1 className="rd-display m-0 text-[var(--rd-text)]">
+                            What I&apos;ve watched
+                        </h1>
+                        <p className="m-0 mt-4 max-w-[52ch] text-pretty text-[clamp(0.95rem,1.2vw,1.03rem)] leading-[1.6] text-[var(--rd-text-2)]">
+                            Every saga I follow, in release order — ticked off
+                            one at a time, from a galaxy far, far away to a long
+                            weekend of Vietnamese cinema.
+                        </p>
+                    </div>
+                    <div className="flex flex-wrap items-center gap-x-2 gap-y-1 font-[family-name:var(--font-mono)] text-[0.72rem] text-[var(--rd-text-3)]">
                         <span>{TOTALS.watched} watched</span>
                         <span aria-hidden>·</span>
                         <span>
-                            {TOTALS.released - TOTALS.watched} on the list
+                            {complete}/{FRANCHISES.length} franchises done
                         </span>
                         <span aria-hidden>·</span>
-                        <span>{TOTALS.upcoming} announced</span>
-                        <span aria-hidden>·</span>
-                        <span>
-                            {complete}/{FRANCHISES.length} franchises complete
-                        </span>
+                        <span>{TOTALS.upcoming} coming</span>
                     </div>
-                    <nav
-                        aria-label="Jump to section"
-                        className="mt-[clamp(1.2rem,2.2vw,1.7rem)] flex flex-wrap items-center gap-[0.55rem]"
-                    >
-                        {[
-                            { href: '#up-next', label: 'Up next' },
-                            { href: '#franchises', label: 'Franchises' },
-                            { href: '#coming', label: 'Coming soon' },
-                        ].map((s, i) => (
-                            <span
-                                key={s.href}
-                                className="inline-flex items-center gap-[0.55rem]"
-                            >
-                                {i > 0 && (
-                                    <span
-                                        aria-hidden
-                                        className="select-none text-[var(--rd-text-4)]"
-                                    >
-                                        |
-                                    </span>
-                                )}
-                                <a
-                                    href={s.href}
-                                    className="border-b border-[color-mix(in_srgb,var(--rd-text)_22%,transparent)] text-[0.875rem] tracking-[-0.01em] text-[var(--rd-text)] transition-colors hover:border-[var(--rd-accent)] hover:text-[var(--rd-accent-ink)]"
-                                >
-                                    {s.label}
-                                </a>
-                            </span>
-                        ))}
-                    </nav>
                 </div>
             </section>
 
-            {/* ---- poster reel ---- */}
-            <div className="mx-auto max-w-[var(--rd-maxw)] px-[var(--rd-pad)] pb-[clamp(2.5rem,5vw,4rem)]">
-                <PosterStrip posters={REEL} />
-            </div>
-
-            {/* ---- up next ---- */}
-            {UP_NEXT.length > 0 && (
-                <section
-                    id="up-next"
-                    className={`${SECTION} scroll-mt-20 !pt-[clamp(1rem,3vw,2rem)]`}
-                >
-                    <SectionHead
-                        title="Up next"
-                        meta={`${UP_NEXT.length} queued`}
+            {/* ---- billboard ---- */}
+            {FEATURE && (
+                <div className={WRAP}>
+                    <Billboard
+                        franchise={FEATURE.franchise}
+                        entry={FEATURE.entry}
+                        eyebrow={FEATURE.eyebrow}
                     />
-                    <ul className="m-0 flex list-none flex-col overflow-hidden rounded-[var(--rd-r-lg)] border border-[var(--rd-border)] bg-[var(--rd-surface)] p-0">
-                        {UP_NEXT.map(({ franchise: f, entry: e }) => (
-                            <li
-                                key={f.slug}
-                                className="border-b border-[var(--rd-line)] last:border-b-0"
-                            >
-                                <a
-                                    href={`#${f.slug}`}
-                                    className="flex min-w-0 items-center gap-4 px-[1.15rem] py-4 transition-colors hover:bg-[var(--rd-surface-2)]"
-                                >
-                                    <Poster
-                                        src={e.poster}
-                                        title={e.title}
-                                        width={48}
-                                    />
-                                    <div className="min-w-0 flex-1">
-                                        <p className="m-0 font-[family-name:var(--font-mono)] text-[0.72rem] text-[var(--rd-text-3)]">
-                                            {f.title} · {f.watched}/{f.released}{' '}
-                                            watched
-                                        </p>
-                                        <p className="m-0 mt-1 text-[1rem] font-medium leading-[1.3] tracking-[-0.02em] text-[var(--rd-text)]">
-                                            {e.title}
-                                            {e.kind !== 'film' && (
-                                                <span className="ml-2 font-[family-name:var(--font-mono)] text-[0.68rem] font-normal text-[var(--rd-text-3)]">
-                                                    {e.kind}
-                                                </span>
-                                            )}
-                                        </p>
-                                    </div>
-                                    <span className="shrink-0 font-[family-name:var(--font-mono)] text-[0.72rem] tabular-nums text-[var(--rd-text-3)]">
-                                        {e.year}
-                                    </span>
-                                    <span
-                                        aria-hidden
-                                        className="text-[var(--rd-text-4)]"
-                                    >
-                                        →
-                                    </span>
-                                </a>
-                            </li>
-                        ))}
-                    </ul>
-                </section>
-            )}
-
-            {/* ---- overview ---- */}
-            <section
-                id="franchises"
-                className={`${SECTION} scroll-mt-20 !pt-0`}
-            >
-                <SectionHead
-                    title="Franchises"
-                    meta={`${FRANCHISES.length} lists · ${TOTALS.watched}/${TOTALS.released} released entries`}
-                />
-                <div className="grid grid-cols-2 gap-[clamp(0.6rem,1.5vw,1rem)] sm:grid-cols-3 lg:grid-cols-4">
-                    {FRANCHISES.map((f, i) => (
-                        <Reveal key={f.slug} delay={i * 30}>
-                            <FranchiseCard franchise={f} />
-                        </Reveal>
-                    ))}
                 </div>
-            </section>
-
-            {/* ---- every list ---- */}
-            <div className="mx-auto max-w-[var(--rd-maxw)] px-[var(--rd-pad)]">
-                {FRANCHISES.map((f) => (
-                    <FranchiseSection key={f.slug} franchise={f} />
-                ))}
-            </div>
-
-            {/* ---- coming soon ---- */}
-            {COMING.length > 0 && (
-                <section id="coming" className={`${SECTION} scroll-mt-20`}>
-                    <div className="border-t border-[var(--rd-line)] pt-[clamp(40px,5vw,64px)]">
-                        <SectionHead
-                            title="Coming soon"
-                            meta={`${COMING.length} announced`}
-                        >
-                            <p className="m-0 mt-2 max-w-[58ch] text-[0.95rem] leading-[1.6] text-[var(--rd-text-2)]">
-                                Announced but not out yet — already on the list.
-                            </p>
-                        </SectionHead>
-                        <ol className="m-0 grid list-none grid-cols-1 gap-[clamp(0.6rem,1.5vw,1rem)] p-0 sm:grid-cols-2 lg:grid-cols-3">
-                            {COMING.map(({ franchise: f, entry: e }) => (
-                                <li
-                                    key={`${f.slug}-${e.title}`}
-                                    className="flex items-center gap-4 rounded-[var(--rd-r)] border border-dashed border-[var(--rd-border-2)] p-3"
-                                >
-                                    <Poster
-                                        src={e.poster}
-                                        title={e.title}
-                                        width={56}
-                                    />
-                                    <span className="min-w-0">
-                                        <span className="block font-[family-name:var(--font-display)] text-[1.35rem] leading-none tracking-[-0.03em] text-[var(--rd-text)]">
-                                            {e.startYear ?? 'tba'}
-                                        </span>
-                                        <span className="mt-2 block text-[0.9rem] font-medium leading-[1.3] tracking-[-0.01em] text-[var(--rd-text)]">
-                                            {e.title}
-                                        </span>
-                                        <span className="mt-0.5 block font-[family-name:var(--font-mono)] text-[0.7rem] text-[var(--rd-text-3)]">
-                                            {f.title}
-                                        </span>
-                                    </span>
-                                </li>
-                            ))}
-                        </ol>
-                    </div>
-                </section>
             )}
+
+            {/* ---- franchise chips ---- */}
+            <nav
+                aria-label="Jump to franchise"
+                className={`${WRAP} mt-[clamp(1.25rem,3vw,2rem)] flex gap-1.5 overflow-x-auto [scrollbar-width:none] md:flex-wrap [&::-webkit-scrollbar]:hidden`}
+            >
+                {FRANCHISES.map((f) => (
+                    <a
+                        key={f.slug}
+                        href={`#${f.slug}`}
+                        lang={f.lang}
+                        className="inline-flex h-8 shrink-0 items-center gap-1.5 rounded-full border border-[var(--rd-border)] bg-[var(--rd-surface)] px-3 text-[0.8rem] tracking-[-0.01em] text-[var(--rd-text-2)] transition-colors hover:border-[var(--rd-text-4)] hover:text-[var(--rd-text)]"
+                    >
+                        {f.title}
+                        <span className="font-[family-name:var(--font-mono)] text-[0.66rem] text-[var(--rd-text-3)]">
+                            {f.watched}/{f.released}
+                        </span>
+                    </a>
+                ))}
+                {COMING.length > 0 && (
+                    <a
+                        href="#coming"
+                        className="inline-flex h-8 shrink-0 items-center rounded-full border border-dashed border-[var(--rd-border-2)] px-3 text-[0.8rem] tracking-[-0.01em] text-[var(--rd-text-2)] transition-colors hover:text-[var(--rd-text)]"
+                    >
+                        Coming soon
+                    </a>
+                )}
+            </nav>
+
+            {/* ---- one shelf per franchise ---- */}
+            <div className="mt-[clamp(1rem,2.5vw,1.75rem)]">
+                {BIG.map((f) => (
+                    <PosterRow
+                        key={f.slug}
+                        id={f.slug}
+                        title={f.title}
+                        lang={f.lang}
+                        meta={
+                            <>
+                                <span className="hidden sm:inline">
+                                    {f.watched}/{f.released} watched
+                                </span>
+                                <StatusPill state={f.state} />
+                            </>
+                        }
+                    >
+                        {released(f).map((e, i, all) => (
+                            <GroupedTile
+                                key={`${i}-${e.title}`}
+                                label={
+                                    e.group && e.group !== all[i - 1]?.group
+                                        ? e.group
+                                        : undefined
+                                }
+                            >
+                                <PosterTile entry={e} next={e === nextOf(f)} />
+                            </GroupedTile>
+                        ))}
+                    </PosterRow>
+                ))}
+
+                {SMALL.length > 0 && (
+                    <PosterRow
+                        title="More sagas"
+                        meta={
+                            <span>
+                                {SMALL.length} franchises ·{' '}
+                                {SMALL.reduce((n, f) => n + f.watched, 0)}{' '}
+                                watched
+                            </span>
+                        }
+                    >
+                        {SMALL.map((f) =>
+                            released(f).map((e, i) => (
+                                <GroupedTile
+                                    key={`${f.slug}-${i}`}
+                                    id={i === 0 ? f.slug : undefined}
+                                    label={
+                                        i === 0
+                                            ? `${f.title} ${f.watched}/${f.released}`
+                                            : undefined
+                                    }
+                                >
+                                    <PosterTile
+                                        entry={e}
+                                        next={e === nextOf(f)}
+                                    />
+                                </GroupedTile>
+                            ))
+                        )}
+                    </PosterRow>
+                )}
+
+                {COMING.length > 0 && (
+                    <PosterRow
+                        id="coming"
+                        title="Coming soon"
+                        meta={<span>{COMING.length} announced</span>}
+                    >
+                        {COMING.map(({ franchise: f, entry: e }) => (
+                            <PosterTile
+                                key={`${f.slug}-${e.title}`}
+                                entry={{
+                                    ...e,
+                                    // show which saga it belongs to
+                                    kind: 'film',
+                                    year: [e.year, f.title]
+                                        .filter(Boolean)
+                                        .join(' · '),
+                                }}
+                            />
+                        ))}
+                    </PosterRow>
+                )}
+            </div>
         </main>
+    )
+}
+
+// GroupedTile — prefixes a tile with a slim vertical label where a plan's
+// `## ` group starts (Marvel phases, Star Wars films/series), or where the
+// next franchise starts on the shared "More sagas" shelf.
+function GroupedTile({
+    label,
+    id,
+    children,
+}: {
+    label?: string
+    id?: string
+    children: React.ReactNode
+}) {
+    if (!label) return <>{children}</>
+    return (
+        <>
+            <li
+                id={id}
+                // franchise labels name what follows; phase labels are decoration
+                aria-hidden={id ? undefined : true}
+                className="flex w-5 shrink-0 scroll-mt-24 snap-start items-start justify-center border-l border-[var(--rd-border)] pt-1"
+            >
+                <span className="font-[family-name:var(--font-mono)] text-[0.62rem] uppercase tracking-[0.14em] text-[var(--rd-text-3)] [writing-mode:vertical-rl]">
+                    {label}
+                </span>
+            </li>
+            {children}
+        </>
     )
 }

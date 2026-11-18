@@ -25,13 +25,15 @@ npx wrangler deploy  # Deploy out/ to Cloudflare Workers (worker `movie`)
 
 ### Key Files
 
-- `src/app/page.tsx` — header, Up next, franchise overview grid, one `FranchiseSection` per franchise, Coming soon.
-- `src/components/franchise-card.tsx` (fanned poster stack) / `franchise-section.tsx` / `poster.tsx` / `poster-strip.tsx` (looping reel of watched posters under the header) / `progress.tsx` / `status-pill.tsx`.
+- `src/app/page.tsx` — Netflix-style: compact header, `Billboard` (first Up next entry, else next release), franchise chips, then one horizontal `PosterRow` per franchise with more than 5 released entries, a shared "More sagas" row for the short ones (franchise labels double as `#slug` anchors), and a Coming soon row. `## ` groups show as slim vertical labels inside a row.
+- `src/components/poster-row.tsx` (client: native scroll-snap shelf, edge-aligned to the page container, hover arrows) / `poster-tile.tsx` (poster + watched check / up next / soon badge) / `billboard.tsx` / `poster.tsx` (greyscale when unwatched, typographic fallback) / `progress.tsx` / `status-pill.tsx`.
 - `src/components/nav.tsx` / `footer.tsx` — shared family chrome (mega-menu, dark-mode cookie synced across `*.hovanhoa.net`, footer link columns).
 
 ### Styling
 
 Reuses the `--rd-*` design-token layer shared across the `hovanhoa.net` family: near-monochrome canvas, Geist Sans for prose, Geist Mono for meta, Libertinus Serif display headings, a single ember-orange accent (progress bars, watched checkmarks). Status pills use the category label colors (pill backgrounds only).
+
+Gotcha: the user often has `next dev` running here — `npm run build` in the repo clobbers its `.next`. Verify builds in a scratchpad copy (rsync without node_modules/.next, `cp -Rc node_modules`).
 
 Gotcha: Libertinus Serif's Vietnamese subset has no stacked diacritics (ệ, ộ …). Headings with Vietnamese text set `lang="vi"`, which `globals.css` maps to Noto Serif.
 

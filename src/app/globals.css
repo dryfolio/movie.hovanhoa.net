@@ -239,20 +239,3 @@ body {
     }
 }
 
-/* movie: slow poster reel under the page header */
-@keyframes rd-reel {
-    to {
-        transform: translateX(-50%);
-    }
-}
-.rd-reel {
-    animation: rd-reel 140s linear infinite;
-}
-.rd-reel:hover {
-    animation-play-state: paused;
-}
-@media (prefers-reduced-motion: reduce) {
-    .rd-reel {
-        animation: none;
-    }
-}

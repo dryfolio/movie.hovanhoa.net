@@ -12,10 +12,14 @@ export function Poster({
     dim = false,
     className = '',
     style,
+    fluid = false,
 }: {
     src?: string
     title: string
+    /** Rendered width in px — also drives image `sizes` and fallback type. */
     width: number
+    /** Fill the parent's width instead of a fixed `width`. */
+    fluid?: boolean
     dim?: boolean
     className?: string
     style?: CSSProperties
@@ -29,7 +33,7 @@ export function Poster({
             <span
                 aria-hidden
                 style={{
-                    width,
+                    width: fluid ? '100%' : width,
                     // px, not %: percentage padding resolves against the
                     // parent's width, not the poster's
                     ...(full && { padding: Math.round(width * 0.1) }),
@@ -64,7 +68,10 @@ export function Poster({
         )
     }
     return (
-        <span style={{ width, ...style }} className={box}>
+        <span
+            style={{ width: fluid ? '100%' : width, ...style }}
+            className={`block ${box}`}
+        >
             <Image
                 src={src}
                 alt=""
